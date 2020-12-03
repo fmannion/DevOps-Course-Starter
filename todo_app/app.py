@@ -11,7 +11,6 @@ app.config.from_object(Config)
 @app.route('/', methods=['GET'])
 def index():
     items = get_cards()
-    # app.logger.info('Processing get cards request')
     return render_template('index.html', items = items)
 
 @app.route('/items/new', methods=['POST'])
