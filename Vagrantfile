@@ -1,5 +1,6 @@
   Vagrant.configure("2") do |config|
   config.vm.box = "hashicorp/bionic64"
+  config.vm.network "forwarded_port", guest: 5000, host: 5000
 
   config.vm.provision :shell, privileged: false, inline: <<-SHELL
     sudo apt-get update
@@ -10,7 +11,6 @@
     xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
 
     # TODO: Install pyenv
-    sudo rm -rf ~/.pyenv
     git clone https://github.com/pyenv/pyenv.git ~/.pyenv
     echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.profile
     echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.profile
@@ -30,9 +30,9 @@
   trigger.info = "Running the TODO app setup script"
   trigger.run_remote = {privileged: false, inline: "
   # Install dependencies and launch
+  cd /vagrant
   poetry install
-  source $HOME/.poetry/env
-  poetry run flask run --host
+  nohup poetry run flask run --host 0.0.0.0 > log.txt 2>&1 &
   "}
   end
 
